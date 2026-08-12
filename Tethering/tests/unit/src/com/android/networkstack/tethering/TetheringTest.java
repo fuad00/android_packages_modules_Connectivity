@@ -1086,6 +1086,19 @@ public class TetheringTest {
     }
 
     @Test
+    public void testNcmInterfaceAddedAfterConfiguredBroadcastStartsTethering() throws Exception {
+        initTetheringOnTestThread();
+        prepareNcmTethering();
+        when(mNetd.interfaceGetList()).thenReturn(new String[] {TEST_MOBILE_IFNAME});
+
+        sendUsbBroadcast(true, true, TETHER_USB_NCM_FUNCTION);
+        mTethering.interfaceAdded(TEST_NCM_IFNAME);
+        mLooper.dispatchAll();
+
+        verify(mNetd).tetherInterfaceAdd(TEST_NCM_IFNAME);
+    }
+
+    @Test
     public void failingLocalOnlyHotspotLegacyApBroadcastWithIfaceStatusChanged() throws Exception {
         failingLocalOnlyHotspotLegacyApBroadcast(true);
     }
