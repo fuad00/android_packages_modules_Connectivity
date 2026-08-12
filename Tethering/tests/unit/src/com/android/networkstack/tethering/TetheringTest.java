@@ -1099,6 +1099,18 @@ public class TetheringTest {
     }
 
     @Test
+    public void testNcmConfiguredWithOverlappingUsbRegexStartsTethering() throws Exception {
+        when(mResources.getStringArray(R.array.config_tether_usb_regexs))
+                .thenReturn(new String[] {TEST_RNDIS_REGEX, TEST_NCM_REGEX});
+        initTetheringOnTestThread();
+        prepareNcmTethering();
+
+        sendUsbBroadcast(true, true, TETHER_USB_NCM_FUNCTION);
+
+        verify(mNetd).tetherInterfaceAdd(TEST_NCM_IFNAME);
+    }
+
+    @Test
     public void failingLocalOnlyHotspotLegacyApBroadcastWithIfaceStatusChanged() throws Exception {
         failingLocalOnlyHotspotLegacyApBroadcast(true);
     }

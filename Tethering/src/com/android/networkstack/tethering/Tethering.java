@@ -712,7 +712,7 @@ public class Tethering {
 
     void interfaceAdded(String iface) {
         if (VDBG) Log.d(TAG, "interfaceAdded " + iface);
-        if (mNcmEnabled && ifaceNameToType(iface) == TETHERING_NCM
+        if (mNcmEnabled && mConfig.isNcm(iface)
                 && !mTetherStates.containsKey(iface)) {
             final int type = getServedUsbType(true /* forNcmFunction */);
             final TetheringRequest request = mRequestTracker.getOrCreatePendingRequest(type);
@@ -1845,7 +1845,9 @@ public class Tethering {
         final TetheringRequest request = mRequestTracker.getOrCreatePendingRequest(tetheringType);
         if (ifaces != null) {
             for (String iface : ifaces) {
-                if (ifaceNameToType(iface) == tetheringType) {
+                final boolean matches = isNcm
+                        ? mConfig.isNcm(iface) : ifaceNameToType(iface) == tetheringType;
+                if (matches) {
                     enableIpServing(request, iface, isNcm);
                     return;
                 }
