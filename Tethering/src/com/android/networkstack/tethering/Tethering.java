@@ -714,7 +714,7 @@ public class Tethering {
         if (VDBG) Log.d(TAG, "interfaceAdded " + iface);
         if (mNcmEnabled && mConfig.isNcm(iface)
                 && !mTetherStates.containsKey(iface)) {
-            final int type = getServedUsbType(true /* forNcmFunction */);
+            final int type = !mConfig.isUsingNcm() ? TETHERING_NCM : TETHERING_USB;
             final TetheringRequest request = mRequestTracker.getOrCreatePendingRequest(type);
             enableIpServing(request, iface, true /* isNcm */);
             return;
